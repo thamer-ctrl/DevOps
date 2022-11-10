@@ -111,6 +111,8 @@
 			
 			
 		</plugins>
+		
+		<finalName>achat-1.0</finalName>
 	</build>
 	
 	
