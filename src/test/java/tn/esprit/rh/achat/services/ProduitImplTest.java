@@ -34,8 +34,6 @@ import static org.mockito.Mockito.times;
 
 
 @SpringBootTest
-
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
 public class ProduitImplTest {
     /* test git* */
