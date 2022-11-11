@@ -1,60 +1,101 @@
 package tn.esprit.rh.achat.services;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
+import tn.esprit.rh.achat.entities.CategorieProduit;
+import tn.esprit.rh.achat.entities.Facture;
+import tn.esprit.rh.achat.entities.Operateur;
 import tn.esprit.rh.achat.entities.Produit;
+import tn.esprit.rh.achat.entities.Stock;
+import tn.esprit.rh.achat.repositories.ProduitRepository;
+import tn.esprit.rh.achat.repositories.StockRepository;
 
-@RunWith(SpringRunner.class)
+
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class ProduitImplTest {
-	@Autowired
-	IProduitService ProduitService;
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class ProduitServiceImplTest {
+
+	
+	
+	   @Autowired
+	    IProduitService produitService;
+	   @Autowired
+	    IStockService stockService;
+	   @Mock
+	    StockRepository stockRepository ;
+	    @Mock
+	    ProduitRepository produitRepository;
+	    @InjectMocks
+	    ProduitServiceImpl produitServiceImp;
+	    @InjectMocks
+	    StockServiceImpl stockServiceImp;
+	    Produit produit = new Produit( " 12345", "ahmed",(float)7.4,new Date(),new Date());
+	    List<Produit> listProduit = new ArrayList<Produit>(){
+	        {
+	            add(new Produit("123456", "ahmed1",(float)7.4,new Date(),new Date()));
+	            add(new Produit("1234567", "ahmed2",(float)8.4,new Date(),new Date()));
+	        }
+	    };
+	@Test
+	void testRetrieveAllProduits() {
+		Mockito.when(produitRepository.findAll()).thenReturn(listProduit);
+        List<Produit> listProduit1 = produitServiceImp.retrieveAllProduits();
+        assertTrue(listProduit1.size()>=0);
+	}
 
 	@Test
-	public void testAddProduit() {
-		List<Produit> Produits = ProduitService.retrieveAllProduits();
-		int expected=Produits.size();
-		Produit s = new Produit("id produit","Produit",23);
-		Produit savedProduit= ProduitService.addProduit(s);
+	void testAddProduit() {
+		 Mockito.when(produitRepository.save(produit)).thenReturn(produit);
+	        Produit produit1 = produitServiceImp.addProduit(produit);
+	        assertNotNull(produit1);
+	}
 
-		assertEquals(expected+1, ProduitService.retrieveAllProduits().size());
-		assertNotNull(savedProduit.getIdProduit());
-		ProduitService.deleteProduit(savedProduit.getIdProduit());
+	@Test
+	void testDeleteProduit() {
+		 Mockito.doNothing().when(produitRepository).deleteById(Mockito.anyLong());
+		 produitServiceImp.deleteProduit(3L);
+	        Mockito.verify(produitRepository, Mockito.times(1)).deleteById(3L);
+	}
+
+	@Test
+	void testUpdateProduit() {
 
 	}
 
 	@Test
-	public void testAddProduitOptimized() {
-
-		Produit s = new Produit("Produit code","Produit",23);
-		Produit savedProduit= ProduitService.addProduit(s);
-		assertNotNull(savedProduit.getIdProduit());
-		assertSame("Produit code", savedProduit.getCodeProduit());
-		assertNotEquals(0,savedProduit.getPrix());
-		ProduitService.deleteProduit(savedProduit.getIdProduit());
-
+	void testRetrieveProduit() {
+		 Mockito.when(produitRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(produit));
+	        Produit produit1 = produitServiceImp.retrieveProduit(2L);
+	        assertNotNull(produit1);
 	}
-
 
 	@Test
-	public void testDeleteProduit() {
-		Produit s = new Produit("Produit code","Produit",23);
-		Produit savedProduit= ProduitService.addProduit(s);
-		ProduitService.deleteProduit(savedProduit.getIdProduit());
-		assertNull(ProduitService.retrieveProduit(savedProduit.getIdProduit()));
+	void testAssignProduitToStock() {
+		  Stock s = new Stock("jjjjjj", (Integer) 9 ,(Integer) 2 );
+	        Produit p = new Produit(" 12345", "hajer",(float)7.4,new Date(),new Date());
+	        Stock stockAdded = stockService.addStock(s);
+	        Produit produitAdded = produitService.addProduit(p);
+	       produitService.assignProduitToStock(produitAdded.getIdProduit(),stockAdded.getIdStock());
+	        assertNotNull(produitService.retrieveProduit(produitAdded.getIdProduit()).getStock());
+	        produitService.deleteProduit(produitAdded.getIdProduit());
+	        stockRepository.delete(stockAdded);
 	}
-
 
 }
