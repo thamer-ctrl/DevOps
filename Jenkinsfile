@@ -6,7 +6,7 @@ pipeline {
                 stage('git') {
             steps {
             
-                git branch: 'branch_hajer', url: 'https://github.com/thamer-ctrl/DevOps.git',
+                git branch: 'hajer', url: 'https://github.com/thamer-ctrl/DevOps.git',
                 credentialsId:"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";
                 
             }
