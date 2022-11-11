@@ -1,101 +1,115 @@
 package tn.esprit.rh.achat.services;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
+import tn.esprit.rh.achat.entities.Produit;
+import tn.esprit.rh.achat.entities.Stock;
+import tn.esprit.rh.achat.repositories.FactureRepository;
+import tn.esprit.rh.achat.repositories.ProduitRepository;
+import tn.esprit.rh.achat.repositories.StockRepository;
+import tn.esprit.rh.achat.services.IProduitService;
+import org.junit.runner.RunWith;
+
+import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.boot.test.context.SpringBootTest;
-import tn.esprit.rh.achat.entities.CategorieProduit;
-import tn.esprit.rh.achat.entities.Facture;
-import tn.esprit.rh.achat.entities.Operateur;
-import tn.esprit.rh.achat.entities.Produit;
-import tn.esprit.rh.achat.entities.Stock;
-import tn.esprit.rh.achat.repositories.ProduitRepository;
-import tn.esprit.rh.achat.repositories.StockRepository;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 
-@ExtendWith(MockitoExtension.class)
 @SpringBootTest
+@RunWith(SpringRunner.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class ProduitServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+public class ProduitImplTest {
+    /* test git* */
+    @Autowired
+    IProduitService ps;
 
-	
-	
-	   @Autowired
-	    IProduitService produitService;
-	   @Autowired
-	    IStockService stockService;
-	   @Mock
-	    StockRepository stockRepository ;
-	    @Mock
-	    ProduitRepository produitRepository;
-	    @InjectMocks
-	    ProduitServiceImpl produitServiceImp;
-	    @InjectMocks
-	    StockServiceImpl stockServiceImp;
-	    Produit produit = new Produit( " 12345", "ahmed",(float)7.4,new Date(),new Date());
-	    List<Produit> listProduit = new ArrayList<Produit>(){
-	        {
-	            add(new Produit("123456", "ahmed1",(float)7.4,new Date(),new Date()));
-	            add(new Produit("1234567", "ahmed2",(float)8.4,new Date(),new Date()));
-	        }
-	    };
-	@Test
-	void testRetrieveAllProduits() {
-		Mockito.when(produitRepository.findAll()).thenReturn(listProduit);
-        List<Produit> listProduit1 = produitServiceImp.retrieveAllProduits();
-        assertTrue(listProduit1.size()>=0);
-	}
+    @Autowired
+    IStockService ss;
 
-	@Test
-	void testAddProduit() {
-		 Mockito.when(produitRepository.save(produit)).thenReturn(produit);
-	        Produit produit1 = produitServiceImp.addProduit(produit);
-	        assertNotNull(produit1);
-	}
+    @MockBean
+    private ProduitRepository pr;
 
-	@Test
-	void testDeleteProduit() {
-		 Mockito.doNothing().when(produitRepository).deleteById(Mockito.anyLong());
-		 produitServiceImp.deleteProduit(3L);
-	        Mockito.verify(produitRepository, Mockito.times(1)).deleteById(3L);
-	}
+    @MockBean
+    private StockRepository SR;
 
-	@Test
-	void testUpdateProduit() {
 
-	}
+    Produit p1=new Produit(1L,"p1","DELL",4500,new Date(),new Date(),null,null,null);
+    Produit p2=new Produit(1L,"p2","LENOVO",4000,new Date(),new Date(),null,null,null);
+    Stock S=new Stock(1L,"S1",100,3,null);
 
-	@Test
-	void testRetrieveProduit() {
-		 Mockito.when(produitRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(produit));
-	        Produit produit1 = produitServiceImp.retrieveProduit(2L);
-	        assertNotNull(produit1);
-	}
 
-	@Test
-	void testAssignProduitToStock() {
-		  Stock s = new Stock("jjjjjj", (Integer) 9 ,(Integer) 2 );
-	        Produit p = new Produit(" 12345", "hajer",(float)7.4,new Date(),new Date());
-	        Stock stockAdded = stockService.addStock(s);
-	        Produit produitAdded = produitService.addProduit(p);
-	       produitService.assignProduitToStock(produitAdded.getIdProduit(),stockAdded.getIdStock());
-	        assertNotNull(produitService.retrieveProduit(produitAdded.getIdProduit()).getStock());
-	        produitService.deleteProduit(produitAdded.getIdProduit());
-	        stockRepository.delete(stockAdded);
-	}
+
+    @Test
+    public void retrieveAllProduitsTest() {
+        when(pr.findAll()).thenReturn(Stream
+                .of(p1,p2)
+                .collect(Collectors.toList()));
+        assertEquals(2,ps.retrieveAllProduits().size());
+        System.out.println("Retrieve  All Produits Works !");
+    }
+
+
+    @Test
+    public void addProduitTest() {
+        when(pr.save(p1)).thenReturn(p1);
+        assertNotNull(p1);
+        assertEquals(p1, ps.addProduit(p1));
+        System.out.println("Add Produit Works !");
+    }
+
+    @Test
+    public void DeleteProduitTest() {
+        pr.save(p1);
+        ps.deleteProduit(p1.getIdProduit());
+        verify(pr, times(1)).deleteById(p1.getIdProduit());
+        System.out.println("Delete Produit Works !");
+
+    }
+
+    @Test
+    public void retrieveProduitTest() {
+        when(pr.findById(p1.getIdProduit())).thenReturn(Optional.of(p1));
+        assertEquals(p1, ps.retrieveProduit(p1.getIdProduit()));
+        System.out.println("Retrieve Produit Works !");
+    }
+
+
+    @Test
+    public void UpdatePorduitTest() {
+        when(pr.save(p1)).thenReturn(p1);
+        assertNotNull(p1);
+        assertEquals(p1, ps.updateProduit(p1));
+
+        System.out.println("Update Produit Works !");
+    }
+
+    @Test
+    public void assignProduitToStockTest() {
+        when(SR.findById(S.getIdStock())).thenReturn(Optional.of(S));
+        when(pr.findById(p1.getIdProduit())).thenReturn(Optional.of(p1));
+
+        System.out.println("Assign Produit To Stock Works !");
+    }
+
 
 }
