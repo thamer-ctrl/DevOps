@@ -7,7 +7,7 @@ pipeline {
             steps {
             
                 git branch: 'hajer', url: 'https://github.com/thamer-ctrl/DevOps.git',
-                credentialsId:"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";
+                credentialsId:"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";
                 
             }
 }
