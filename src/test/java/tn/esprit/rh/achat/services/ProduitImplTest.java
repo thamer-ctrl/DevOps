@@ -1,16 +1,20 @@
-package com.esprit.examen.services;
+package tn.esprit.rh.achat.services;
 
-import com.esprit.examen.entities.Produit;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import tn.esprit.rh.achat.entities.Produit;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -31,7 +35,7 @@ public class ProduitImplTest {
 
 	}
 
-	/*@Test
+	@Test
 	public void testAddProduitOptimized() {
 
 		Produit s = new Produit("Produit code","Produit",23);
@@ -50,7 +54,7 @@ public class ProduitImplTest {
 		Produit savedProduit= ProduitService.addProduit(s);
 		ProduitService.deleteProduit(savedProduit.getIdProduit());
 		assertNull(ProduitService.retrieveProduit(savedProduit.getIdProduit()));
-	}*/
+	}
 
 
 }
