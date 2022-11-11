@@ -5,6 +5,28 @@ pipeline {
         registryCredential = 'dockerhub'
         registry = "tassnime/tpachatproject"
     }
+    
+  
+
+           stage('maven clean') {
+            steps {
+                echo 'maven clean'
+                sh 'mvn  clean'
+           }
+        }
+        stage('maven build') {
+            steps {
+                echo "build project"
+               sh 'mvn -Dmaven.test.skip=true   package'
+            }
+        }
+
+        stage('maven test') {
+            steps {
+                echo 'unit test'
+                sh 'mvn test'
+            }
+        }
 
     stages {
         stage('Getting the project from GIT') {
