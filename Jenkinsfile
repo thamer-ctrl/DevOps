@@ -1,156 +1,153 @@
 pipeline {
     agent any
-	
- environment {
-        registryCredential = 'dockerhub'
-        registry = "tassnime/tpachatproject"
+    environment {
+        TAG = '3.0'
     }
-    
-  
+    stages {
 
-           stage('maven clean') {
+      stage('maven clean') {
             steps {
                 echo 'maven clean'
                 sh 'mvn  clean'
-           }
-        }
-        stage('maven build') {
-            steps {
-                echo "build project"
-               sh 'mvn -Dmaven.test.skip=true   package'
             }
         }
-
+       stage('maven build') {
+            steps {
+                echo "build project"
+                sh 'mvn -Dmaven.test.skip=true   package'
+            }
+       }
+       
         stage('maven test') {
             steps {
                 echo 'unit test'
                 sh 'mvn test'
             }
         }
-
-    stages {
-        stage('Getting the project from GIT') {
-            steps {
-               echo 'Test';
-            }
-        }
-        
-        stage('MVN CLEAN') {
-            steps {
-               
-              script {
-
-                  sh 'mvn clean'
-
- 
-                      }
-                   }        
-         }
-        stage('MVN compile') {
-            steps {
-               
-              script {
-
-                  sh 'mvn compile'
-
- 
-                      }
-                   }        
-         }
-         stage('MVN INSTALL') {
-            steps {
-               
-              script {
-
-                  sh 'mvn install'
-
- 
-                      }
-                   }        
-         }
-         stage('Test unitaire') {
+//        stage('maven clean install') {
+//            steps {
+//                echo 'maven clean install'
+//                sh 'mvn clean install'
+//            }
+//        }
+//        stage('SonarQube analysis') {
+//            steps {
+//
+//                withSonarQubeEnv('sonarqube') {
+//                    sh 'mvn sonar:sonar'
+//                }
+//            }
+//        }
+//      stage('deploy to nexus') {
+//            steps {
+//                sh 'mvn -Dmaven.test.skip=true deploy'
+//            }
+//        }
+//        stage('build docker image') {
+//            steps {
+//                script {
+//                    echo "Docker build image"
+//                    dockerImage = docker.build("${REGISTRY}:${TAG}")
+//                    //  sh 'docker build -t tpachatproject -f Dockerfile .'
+//                }
+//            }
+//        }
+//        stage('push docker hub') {
+//            steps {
+//                script {
+//                    echo "Docker push"
+//                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+//                        sh 'docker login -u chjasser -p ${dockerhubpwd}'
+////                        dockerImage.push()
+//                        sh 'docker push ${REGISTRY}:${TAG}'
+//                        sh 'docker logout'
+//                    }
+//                }
+//            }
+//        }
+        stage('run containers') {
             steps {
                 script {
-                    
-                sh 'mvn test'  
+                    echo "Docker build image"
+                    sh 'docker-compose up -d'
+                    sh 'docker-compose ps'
                 }
-
-		        
-            } 
-           
-        }
-	
-         
-          stage('SONAR') {
-            steps {
-               
-              script {
-
-                  sh 'mvn sonar:sonar  -Dsonar.sources=src/main/java -Dsonar.css.node=. -Dsonar.java.binaries=. -Dsonar.host.url=http://192.168.1.102:9000/ -Dsonar.login=admin   -Dsonar.password=sonar'
-
- 
-                      }
-                   }         
-         }
-	    
-          stage('MVN package') {
-            steps {
-                script {
-                    
-                sh 'mvn package'  
-                }
-
-		        
-            } 
-           
-        }
-	
-         stage('nexus') {
-            steps {
-               
-              script {
-
-sh 'mvn deploy -e'                      }
-                   }         
-         }
-	    
-	    
-	    stage('Building our image') {
-  steps {
-               
-sh 'docker build -t tassnime/tpachatproject .'
-               
             }
         }
-	    
-   stage('Docker compose') {
-             
-             
-            steps {
-               
-            sh 'docker-compose up -d'
-               
-            }
-        }
-       
-   stage('Push Dockerhub') {
+//
+//        stage('clean install') {
+//            steps {
+//
+//                    sh 'mvn clean install'
+//
+//            }
+//        }
+
+
+/*
+        stage('Docker hub pull') {
             steps {
                 script {
-                    docker.withRegistry( '', registryCredential ) {
-                        sh "docker push $registry"
+                    echo "Docker pull"
+                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+                        sh 'docker login -u chjasser -p ${dockerhubpwd}'
+//                        dockerImage.pull()
+                        sh 'docker pull ${REGISTRY}:${TAG}'
+                        sh 'docker logout'
                     }
-                    
+
                 }
-                
             }
-            
-        }
-	    stage('Run Spring et MySQL Containers') {
-                                steps {
-                                    script {
-                                      sh ' docker-compose up -d '
-                                    }
-                                }
-                            }
-       
-     }
+        }*/
+
+        //        stage('run spring boot') {
+//            steps {
+//                echo "run spring boot"
+//                sh 'mvn spring-boot:run'
+//            }
+//        }
+//        stage('build project') {
+//            steps {
+//                echo "build project"
+//                sh 'mvn  package'
+//            }
+//        }
+
+//        stage('stop containers') {
+//            steps {
+//                sh 'docker-compose down'
+//                sh 'docker-compose ps -a'
+//            }
+//
+//        }
+
+//        stage('Dokcer Cleaning up') {
+//            steps {
+//                sh "docker rmi ${REGISTRY}:${TAG}"
+//            }
+//        }
+//
+//                    stage('install') {
+//                        steps {
+//                            echo 'install'
+//                            sh 'mvn  -Dmaven.test.skip=true  clean install '
+//
+//                        }
+//
+//                    }
+
+
+    }
+  // post {
+    //    failure {
+      //      emailext to: "cjasser40@gmail.com",
+        //            subject: "jenkins build:${currentBuild.currentResult}: ${env.JOB_NAME}",
+          //          body: "${currentBuild.currentResult}: Job ${env.JOB_NAME}\nMore Info can be found here: ${env.BUILD_URL}",
+            //      ********************  attachLog: true,
+              //      compressLog: true,
+                 //   recipientProviders: [buildUser(), developers(), brokenBuildSuspects()]
+       //}
+
+
+    //}
+//}
