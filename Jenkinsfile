@@ -24,14 +24,7 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        
-//        stage('maven clean install') {
-//            steps {
-//                echo 'maven clean install'
-//                sh 'mvn clean install'
-//            }
-//        }
-        stage('SonarQube analysis') {
+stage('SonarQube analysis') {
             steps {
 
                 withSonarQubeEnv('sonarqube') {
@@ -39,20 +32,36 @@ pipeline {
                 }
             }
         }
+
+      stage('deploy to nexus') {
+            steps {
+                sh 'mvn -Dmaven.test.skip=true deploy'
+            }
+        }
+        
+        stage('build docker image') {
+           steps {
+                script {
+                    echo "Docker build image"
+                    dockerImage = docker.build("${REGISTRY}:${TAG}")
+                    //  sh 'docker build -t tpachatproject -f Dockerfile .'
+                }
+            }
+        }
+
+//        stage('maven clean install') {
+//            steps {
+//                echo 'maven clean install'
+//                sh 'mvn clean install'
+//            }
+//        }
+        
 //      stage('deploy to nexus') {
 //            steps {
 //                sh 'mvn -Dmaven.test.skip=true deploy'
 //            }
 //        }
-//        stage('build docker image') {
-//            steps {
-//                script {
-//                    echo "Docker build image"
-//                    dockerImage = docker.build("${REGISTRY}:${TAG}")
-//                    //  sh 'docker build -t tpachatproject -f Dockerfile .'
-//                }
-//            }
-//        }
+
 //        stage('push docker hub') {
 //            steps {
 //                script {
@@ -141,7 +150,7 @@ pipeline {
     }
   // post {
     //    failure {
-      //      emailext to: "cjasser40@gmail.com",
+      //      emailext to: "tassnime.soussia0@gmail.com",
         //            subject: "jenkins build:${currentBuild.currentResult}: ${env.JOB_NAME}",
           //          body: "${currentBuild.currentResult}: Job ${env.JOB_NAME}\nMore Info can be found here: ${env.BUILD_URL}",
             //      ********************  attachLog: true,
