@@ -24,6 +24,31 @@ pipeline {
                 sh 'mvn test'
             }
         }
+
+stage('build docker image') {
+           steps {
+                script {
+                    echo "Docker build image"
+                    dockerImage = docker.build("${REGISTRY}:${TAG}")
+                      sh 'docker build -t tpachatproject -f Dockerfile .'
+                }
+            }
+        }
+
+        stage('push docker hub') {
+           steps {
+               script {
+                    echo "Docker push"
+                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+                        sh 'docker login -u chjasser -p ${dockerhubpwd}'
+                        dockerImage.push()
+                        sh 'docker push ${REGISTRY}:${TAG}'
+                        sh 'docker logout'
+                    }
+                }
+            }
+        }
+
 stage('SonarQube analysis') {
             steps {
 
@@ -39,15 +64,7 @@ stage('SonarQube analysis') {
             }
         }
         
-        stage('build docker image') {
-           steps {
-                script {
-                    echo "Docker build image"
-                    dockerImage = docker.build("${REGISTRY}:${TAG}")
-                    //  sh 'docker build -t tpachatproject -f Dockerfile .'
-                }
-            }
-        }
+        
 
 //        stage('maven clean install') {
 //            steps {
