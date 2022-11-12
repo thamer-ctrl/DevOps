@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: $REGISTRY:$TAG
+    image: hajersaidi/achatback
     restart: on-failure
     container_name: $SPRING_CONTAINER
     depends_on:
