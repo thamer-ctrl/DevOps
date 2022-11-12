@@ -31,14 +31,14 @@ pipeline {
 //                sh 'mvn clean install'
 //            }
 //        }
-//        stage('SonarQube analysis') {
-//            steps {
-//
-//                withSonarQubeEnv('sonarqube') {
-//                    sh 'mvn sonar:sonar'
-//                }
-//            }
-//        }
+        stage('SonarQube analysis') {
+            steps {
+
+                withSonarQubeEnv('sonarqube') {
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
 //      stage('deploy to nexus') {
 //            steps {
 //                sh 'mvn -Dmaven.test.skip=true deploy'
