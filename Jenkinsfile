@@ -24,6 +24,7 @@ pipeline {
                 sh 'mvn test'
             }
         }
+        
 //        stage('maven clean install') {
 //            steps {
 //                echo 'maven clean install'
@@ -150,4 +151,4 @@ pipeline {
 
 
     //}
-//}
+}
