@@ -50,8 +50,6 @@ services:
       - "9090:9090"
     depends_on:
       - app_achat_back
-    networks:
-      - spring-network
 
 
   grafana:
@@ -66,9 +64,6 @@ services:
       - grafana-storage:/var/lib/grafana
 
 
-networks:
-  spring-network:
-    name: spring-network
 
 volumes:
  
