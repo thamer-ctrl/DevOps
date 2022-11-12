@@ -24,6 +24,12 @@ pipeline {
                 sh 'mvn test'
             }
         }
+stage('Checking Maven version'){
+            steps{
+                echo "Checking Mavin version";
+                sh "mvn -version"
+            }
+        }
 
 stage('build docker image') {
            steps {
@@ -40,7 +46,7 @@ stage('build docker image') {
                script {
                     echo "Docker push"
                     withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                        sh 'docker login -u chjasser -p ${dockerhubpwd}'
+                        sh 'docker login -u tassnime -p ${dockerhubpwd}'
                         dockerImage.push()
                         sh 'docker push ${REGISTRY}:${TAG}'
                         sh 'docker logout'
