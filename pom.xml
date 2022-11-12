@@ -8,7 +8,7 @@
 		<version>2.5.3</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>tn.esprit.rh</groupId>
+	<groupId>tn.esprit.dhia</groupId>
 	<artifactId>achat</artifactId>
 	<version>1.0</version>
 	<name>achat</name>
