@@ -7,11 +7,16 @@ pipeline {
             steps {
             
                 git branch: 'hajer', url: 'https://github.com/thamer-ctrl/DevOps.git',
-                credentialsId:"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";
+                credentialsId:"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";
                 
             }
 }
-        
+      stage("MVN Clean"){
+            steps {
+                sh """mvn clean -e """
+                
+            }
+        }  
        stage('MVN Package'){
             steps {
                 sh """mvn -version  """
@@ -20,9 +25,9 @@ pipeline {
             }
         }
         
-      stage("MVN Compile"){
+       stage("Junit/Mockito"){
             steps {
-                sh """mvn compile -e """
+                sh """mvn test """
                 
             }
         }
@@ -32,29 +37,38 @@ pipeline {
                 
             }
         }
-        stage("Junit/Mockito"){
-            steps {
-                sh """mvn test """
-                
-            }
-        }
+       
         stage('Nexus'){
             steps{
                 sh """mvn deploy """
             }
         }
-           stage("MVN Install"){
+           stage('Docker build')
+        {
             steps {
-                sh """mvn install """
-                
+                 sh 'docker build --build-arg IP=0.0.0.0 -t hajersaidi/achatback  .'
             }
         }
-        stage("MVN Clean"){
+        stage('Docker login')
+        {
             steps {
-                sh """mvn clean -e """
-                
-            }
+                sh 'echo $dockerhub_PSW | docker login -u hajersaidi -p dckr_pat_1XTH7dQVwz_yuf0KrwuymdQvRJU'
+            }    
+       
         }
+      stage('Push') {
+
+			steps {
+				sh 'docker push hajersaidi/achatback'
+			}
+		}
+        
+       stage('Run app With DockerCompose') {
+              steps {
+                  sh "docker-compose -f docker-compose.yml up -d  "
+              }
+              }
+        
 
     }
 }
