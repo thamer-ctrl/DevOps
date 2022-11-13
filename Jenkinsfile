@@ -36,10 +36,16 @@ pipeline {
             }
         }
         
-         stage('Junit'){
+        stage('Junit'){
             steps{
                 echo "Junit";
                 sh "mvn test"
+            }
+			post {
+                always {
+                    junit allowEmptyResults: true, testResults: 'target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts artifacts: '**/target/*.jar'
+                }
             }
         }
         
