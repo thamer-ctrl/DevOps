@@ -20,7 +20,7 @@ pipeline {
         stage('Checking Maven version'){
             steps{
                 echo "Checking Mavin version";
-                sh "mvn -version >> Mavenversion.csv"
+                sh "mvn -version"
             }
         }
         stage('Cleaning Maven install'){
@@ -46,10 +46,17 @@ pipeline {
         stage('Compiling Project'){
             steps {
                 echo "Compiling Project";
-                sh 'mvn compile  -DskipTests >> Compiling.csv'
+                sh 'mvn compile  -DskipTests'
             }
         }
         
+	stage('Deploying to Nexus') {
+            steps {
+                echo "Deploying to Nexus";
+                sh 'mvn  -X deploy'
+            }
+        }
+
         stage ('SonarQube analysis'){
             steps {
                 echo "SonarQube analysis";
@@ -62,13 +69,7 @@ pipeline {
                sh 'mvn jacoco:report'
             }
         }
-        stage('Deploying to Nexus') {
-            steps {
-                echo "Deploying to Nexus";
-                sh 'mvn  -X deploy >> Deploying.csv'
-            }
-        }
-        
+
         stage("Login to Docker") {
             steps{
                 echo "Login to Docker";
