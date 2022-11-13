@@ -47,7 +47,7 @@ class CategorieProduitServiceImplTest {
 	CategorieProduit c2=new CategorieProduit(2L,"cat 1","cat 1",null);
 
 	@Test
-    	public void  retrieveAllCategorieProduitsTest() {
+    	public void retrieveAllCategorieProduitsTest() {
         when(cr.findAll()).thenReturn(Stream
                 .of(c1,c2)
                 .collect(Collectors.toList()));

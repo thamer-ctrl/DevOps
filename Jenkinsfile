@@ -26,7 +26,7 @@ pipeline {
         stage('Cleaning Maven install'){
             steps {
                 echo "Cleaning Maven install";
-                sh 'mvn clean install'
+                sh 'mvn clean install -DskipTests'
             }
         }
         
