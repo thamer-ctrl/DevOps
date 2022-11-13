@@ -69,7 +69,7 @@ class CategorieProduitServiceImplTest {
     public void addCategorieProduitTest() {
         when(cr.save(c1)).thenReturn(c1);
         assertNotNull(c1);
-        assertEquals(r1, cs.addCategorieProduit(c1));
+        assertEquals(c1, cs.addCategorieProduit(c1));
         System.out.println("Add CategorieProduit");
     }
 
