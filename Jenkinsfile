@@ -12,7 +12,7 @@ pipeline {
         }
         stage('Pulling & Checking Git Branch ') {
             steps {
-                echo "Pulling";
+                echo "Pulling & Checking Git Branch";
                 git branch: 'dhia',
                 url:'https://github.com/thamer-ctrl/DevOps.git';
             }
@@ -20,13 +20,13 @@ pipeline {
         stage('Checking Maven version'){
             steps{
                 echo "Checking Mavin version";
-                sh "mvn -version"
+                sh "mvn -version >> Mavenversion.csv"
             }
         }
         stage('Cleaning Maven install'){
             steps {
                 echo "Cleaning Maven install";
-                sh 'mvn -X clean install '
+                sh 'mvn -X clean install'
             }
         }
         
@@ -40,7 +40,7 @@ pipeline {
         stage('Compiling Project'){
             steps {
                 echo "Compiling Project";
-                sh 'mvn compile  -DskipTests'
+                sh 'mvn compile  -DskipTests >> Compiling.csv'
             }
         }
         
@@ -54,7 +54,7 @@ pipeline {
         stage('Deploying to Nexus') {
             steps {
                 echo "Deploying to Nexus";
-                sh 'mvn  -X deploy'
+                sh 'mvn  -X deploy >> Deploying.csv'
             }
         }
         
@@ -85,6 +85,18 @@ pipeline {
                 sh 'docker-compose up -d'
             }
         } 
+	  post {
+            always{
+                archiveArtifacts artifacts: '*.csv', onlyIfSuccessful: true
+                
+                emailext to: "dhia.abdelli@esprit.tn",
+                subject: "jenkins build:${currentBuild.currentResult}: ${env.JOB_NAME}",
+                body: "${currentBuild.currentResult}: Job ${env.JOB_NAME}\nMore Info can be found here: ${env.BUILD_URL}",
+                attachmentsPattern: '*.csv'
+                
+            cleanWs()
+            }
+        }
         
     }
 }
