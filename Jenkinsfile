@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         TAG = '3.0'
+	REGISTRY = 'tassnime/tpachat'
     }
     stages {
 
@@ -31,21 +32,15 @@ stage('Checking Maven version'){
             }
         }
 
- 
 
-stage('Push') {
 
-			steps {
-				sh 'docker push tassnime/achattass'
-			}
-		}
 
 stage('build docker image') {
            steps {
                 script {
                     echo "Docker build image"
                     dockerImage = docker.build("${REGISTRY}:${TAG}")
-                      sh 'docker build -t tpachatproject -f Dockerfile .'
+                    
                 }
             }
         }
@@ -54,12 +49,11 @@ stage('build docker image') {
            steps {
                script {
                     echo "Docker push"
-                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                        sh 'docker login -u tassnime -p ${dockerhubpwd}'
-                        dockerImage.push()
+                     
+                        sh 'docker login -u tassnime -p ${}'
                         sh 'docker push ${REGISTRY}:${TAG}'
                         sh 'docker logout'
-                    }
+                    
                 }
             }
         }
