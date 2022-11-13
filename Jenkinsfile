@@ -35,6 +35,12 @@ pipeline {
                 echo "Junit";
                 sh "mvn test"
             }
+		post {
+                always {
+                    junit allowEmptyResults: true, testResults: 'target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts artifacts: '**/target/*.jar'
+                }
+            }
         }
         
         stage('Compiling Project'){
@@ -51,6 +57,11 @@ pipeline {
             }
         }
         
+	  stage ('Jacoco-Report') {
+            steps {
+               sh 'mvn jacoco:report'
+            }
+        }
         stage('Deploying to Nexus') {
             steps {
                 echo "Deploying to Nexus";
