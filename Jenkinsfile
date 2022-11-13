@@ -15,19 +15,19 @@ pipeline {
         }
 
     }
-stage('maven build') {
+	stage('maven build') {
             steps {
                 echo "build project"
                 sh 'mvn -Dmaven.test.skip=true   package'
             }
        }
-stage('maven test') {
+	stage('maven test') {
             steps {
                 echo 'unit test'
                 sh 'mvn test'
             }
         }
-stage('Checking Maven version'){
+	stage('Checking Maven version'){
             steps{
                 echo "Checking Mavin version";
                 sh "mvn -version"
