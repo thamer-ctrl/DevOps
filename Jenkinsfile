@@ -45,11 +45,28 @@ stage('build docker image') {
             }
         }
 
-stage('deploy to nexus') {
+stage('run containers') {
+            steps {
+                script {
+                    echo "Docker build image"
+                    sh 'docker-compose up -d'
+                    sh 'docker-compose ps'
+                }
+            }
+        }
+
+stage('NEXUS'){
+            steps{
+                echo "nexus"
+                sh ' mvn deploy -DskipTests=true'
+            }
+
+/*stage('deploy to nexus') {
             steps {
                 sh 'mvn -Dmaven.test.skip=true deploy'
             }
         }
+*/
 
         stage('push docker hub') {
            steps {
@@ -74,7 +91,15 @@ stage('SonarQube analysis') {
             }
         }
 
-    
+     post {
+       failure {
+           emailext to: "tassnime.soussia0@gmail.com",
+                    subject: "jenkins build:${currentBuild.currentResult}: ${env.JOB_NAME}",
+                    body: "${currentBuild.currentResult}: Job ${env.JOB_NAME}\nMore Info can be found here: ${env.BUILD_URL}",
+                   attachLog: true,
+                    compressLog: true,
+                    recipientProviders: [buildUser(), developers(), brokenBuildSuspects()]
+       }
         
         
 
@@ -104,15 +129,6 @@ stage('SonarQube analysis') {
 //                }
 //            }
 //        }
-        stage('run containers') {
-            steps {
-                script {
-                    echo "Docker build image"
-                    sh 'docker-compose up -d'
-                    sh 'docker-compose ps'
-                }
-            }
-        }
 //
 //        stage('clean install') {
 //            steps {
@@ -129,7 +145,7 @@ stage('SonarQube analysis') {
                 script {
                     echo "Docker pull"
                     withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                        sh 'docker login -u chjasser -p ${dockerhubpwd}'
+                        sh 'docker login -u tassnime -p tassnime3107/'
 //                        dockerImage.pull()
                         sh 'docker pull ${REGISTRY}:${TAG}'
                         sh 'docker logout'
@@ -175,18 +191,4 @@ stage('SonarQube analysis') {
 //
 //                    }
 
-
-    }
-  // post {
-    //    failure {
-      //      emailext to: "tassnime.soussia0@gmail.com",
-        //            subject: "jenkins build:${currentBuild.currentResult}: ${env.JOB_NAME}",
-          //          body: "${currentBuild.currentResult}: Job ${env.JOB_NAME}\nMore Info can be found here: ${env.BUILD_URL}",
-            //      ********************  attachLog: true,
-              //      compressLog: true,
-                 //   recipientProviders: [buildUser(), developers(), brokenBuildSuspects()]
-       //}
-
-
-    //}
 }
