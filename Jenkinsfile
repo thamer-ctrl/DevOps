@@ -12,7 +12,7 @@ pipeline {
         }
         stage('Pulling & Checking Git Branch ') {
             steps {
-                echo "Pulling & Checking Git Branch";
+                echo "Pulling";
                 git branch: 'dhia',
                 url:'https://github.com/thamer-ctrl/DevOps.git';
             }
@@ -20,13 +20,13 @@ pipeline {
         stage('Checking Maven version'){
             steps{
                 echo "Checking Mavin version";
-                sh "mvn -version >> Mavenversion.csv"
+                sh "mvn -version"
             }
         }
         stage('Cleaning Maven install'){
             steps {
                 echo "Cleaning Maven install";
-                sh 'mvn -X clean install'
+                sh 'mvn -X clean install '
             }
         }
         
@@ -40,7 +40,7 @@ pipeline {
         stage('Compiling Project'){
             steps {
                 echo "Compiling Project";
-                sh 'mvn compile  -DskipTests >> Compiling.csv'
+                sh 'mvn compile  -DskipTests'
             }
         }
         
@@ -54,7 +54,7 @@ pipeline {
         stage('Deploying to Nexus') {
             steps {
                 echo "Deploying to Nexus";
-                sh 'mvn  -X deploy >> Deploying.csv'
+                sh 'mvn  -X deploy'
             }
         }
         
@@ -85,7 +85,7 @@ pipeline {
                 sh 'docker-compose up -d'
             }
         } 
-	  post {
+		post {
             always{
                 archiveArtifacts artifacts: '*.csv', onlyIfSuccessful: true
                 
