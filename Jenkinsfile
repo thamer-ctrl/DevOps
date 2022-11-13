@@ -12,6 +12,7 @@ pipeline {
                 sh 'mvn  clean'
             }
         }
+}
        stage('maven build') {
             steps {
                 echo "build project"
@@ -100,6 +101,7 @@ stage('SonarQube analysis') {
                     compressLog: true,
                     recipientProviders: [buildUser(), developers(), brokenBuildSuspects()]
        }
+}
         
         
 
@@ -146,16 +148,17 @@ stage('SonarQube analysis') {
                     echo "Docker pull"
                     withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
                         sh 'docker login -u tassnime -p tassnime3107/'
-//                        dockerImage.pull()
+                       dockerImage.pull()
                         sh 'docker pull ${REGISTRY}:${TAG}'
                         sh 'docker logout'
                     }
 
                 }
             }
-        }*/
+        }
+*/
 
-        //        stage('run spring boot') {
+//        stage('run spring boot') {
 //            steps {
 //                echo "run spring boot"
 //                sh 'mvn spring-boot:run'
@@ -191,3 +194,4 @@ stage('SonarQube analysis') {
 //
 //                    }
 
+}
