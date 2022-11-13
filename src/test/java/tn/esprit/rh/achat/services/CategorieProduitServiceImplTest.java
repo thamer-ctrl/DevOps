@@ -38,8 +38,6 @@ class CategorieProduitServiceImplTest {
 	@Autowired
 	ICategorieProduitService cs;
 
-
-
 	@MockBean
     	private CategorieProduitRepository cr;
 	
@@ -68,10 +66,8 @@ class CategorieProduitServiceImplTest {
     public void DeleteCategorieProduitTest() {
         cr.save(c1);
         cs.deleteCategorieProduit(c1.getIdCategorieProduit());
-        verify(pr, times(1)).deleteById(c1.getIdCategorieProduit());
-        System.out.println("Delete CategorieProduit");
-
-    }
+        verify(cr, times(1)).deleteById(c1.getIdCategorieProduit());
+        System.out.println("Delete CategorieProduit");}
 
     @Test
     public void CategorieProduitTest() {
