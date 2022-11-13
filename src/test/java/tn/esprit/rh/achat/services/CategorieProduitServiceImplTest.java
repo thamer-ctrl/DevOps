@@ -77,7 +77,7 @@ class CategorieProduitServiceImplTest {
     @Test
     public void DeleteCategorieProduitTest() {
         cr.save(c1);
-        cs.eleteCategorieProduit(c1.getIdCategorieProduit());
+        cs.deleteCategorieProduit(c1.getIdCategorieProduit());
         verify(pr, times(1)).deleteById(c1.getIdCategorieProduit());
         System.out.println("Delete CategorieProduit");
 
