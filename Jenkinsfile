@@ -30,6 +30,12 @@ stage('Checking Maven version'){
                 sh "mvn -version"
             }
         }
+stage('Push') {
+
+			steps {
+				sh 'docker push tassnime/achattass'
+			}
+		}
 
 stage('build docker image') {
            steps {
