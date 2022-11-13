@@ -3,7 +3,8 @@ pipeline {
     environment {
         TAG = '3.0'
 	REGISTRY = 'tassnime/tpachat'
-    
+    }
+
     stages {
 
       stage('maven clean') {
@@ -13,7 +14,7 @@ pipeline {
             }
         }
 }
-       stage('maven build') {
+   /*    stage('maven build') {
             steps {
                 echo "build project"
                 sh 'mvn -Dmaven.test.skip=true   package'
@@ -43,6 +44,19 @@ stage('build docker image') {
                     dockerImage = docker.build("${REGISTRY}:${TAG}")
                     
                 }
+            }
+        }
+
+stages {
+	    
+                stage ('Git') {
+            steps {
+                
+               
+               git branch: 'tassnime', 
+                url: 'https://github.com/thamer-ctrl/DevOps.git'
+                 
+		        
             }
         }
 
@@ -103,7 +117,7 @@ stage('SonarQube analysis') {
        }
 }
         
-        
+  */      
 
 //        stage('maven clean install') {
 //            steps {
@@ -194,6 +208,5 @@ stage('SonarQube analysis') {
 //
 //                    }
 
-}
 }
 }
