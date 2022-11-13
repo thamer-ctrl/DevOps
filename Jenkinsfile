@@ -75,6 +75,8 @@ stage('NEXUS'){
                 echo "nexus"
                 sh ' mvn deploy -DskipTests=true'
             }
+}
+
 
 
 }
