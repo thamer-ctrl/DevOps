@@ -45,23 +45,25 @@ stage('build docker image') {
             }
         }
 
+stage('deploy to nexus') {
+            steps {
+                sh 'mvn -Dmaven.test.skip=true deploy'
+            }
+        }
+
         stage('push docker hub') {
            steps {
                script {
                     echo "Docker push"
                      
-                        sh 'docker login -u tassnime -p admin'
+                        sh 'docker login -u tassnime -p tassnime3107/'
                         sh 'docker push ${REGISTRY}:${TAG}'
                         sh 'docker logout'
                     
                 }
             }
         }
-  stage('deploy to nexus') {
-            steps {
-                sh 'mvn -Dmaven.test.skip=true deploy'
-            }
-        }
+  
 
 stage('SonarQube analysis') {
             steps {
