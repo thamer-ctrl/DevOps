@@ -23,10 +23,16 @@ pipeline {
                 sh "mvn -version"
             }
         }
-        stage('Cleaning Maven install'){
+		stage('Maven Clean'){
             steps {
-                echo "Cleaning Maven install";
-                sh 'mvn clean install -DskipTests'
+                echo "Maven Clean";
+                sh 'mvn clean'
+            }
+        }
+        stage('Maven install'){
+            steps {
+                echo "Maven install";
+                sh 'mvn install '
             }
         }
         
