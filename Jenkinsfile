@@ -37,5 +37,40 @@ pipeline {
                       }
                    }        
          }
+stage('Test unitaire') {
+            steps {
+                script {
+                    
+                sh 'mvn test'  
+                }
+
+		        
+            } 
+           
+        }
+	
+         
+	    
+          stage('MVN package') {
+            steps {
+                script {
+                    
+                sh 'mvn package'  
+                }
+
+		        
+            } 
+           
+        }
+
+stage('nexus') {
+            steps {
+               
+              script {
+
+sh 'mvn deploy -e'                      }
+                   }         
+         }
+
 }
 }
