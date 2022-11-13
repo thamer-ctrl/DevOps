@@ -50,11 +50,16 @@ stage('build docker image') {
                script {
                     echo "Docker push"
                      
-                        sh 'docker login -u tassnime -p ${}'
+                        sh 'docker login -u tassnime -p admin'
                         sh 'docker push ${REGISTRY}:${TAG}'
                         sh 'docker logout'
                     
                 }
+            }
+        }
+  stage('deploy to nexus') {
+            steps {
+                sh 'mvn -Dmaven.test.skip=true deploy'
             }
         }
 
@@ -67,11 +72,7 @@ stage('SonarQube analysis') {
             }
         }
 
-      stage('deploy to nexus') {
-            steps {
-                sh 'mvn -Dmaven.test.skip=true deploy'
-            }
-        }
+    
         
         
 
