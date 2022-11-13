@@ -1,4 +1,4 @@
-package tn.esprit.rh.achat.services;
+/*package tn.esprit.rh.achat.services;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -85,3 +85,4 @@ class CategorieProduitServiceImplTest {
         System.out.println("Update CategorieProduit");
     }
 }
+*/
