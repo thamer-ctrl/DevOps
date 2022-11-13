@@ -3,7 +3,7 @@ pipeline {
     environment {
         TAG = '3.0'
 	REGISTRY = 'tassnime/tpachat'
-    }
+    
     stages {
 
       stage('maven clean') {
