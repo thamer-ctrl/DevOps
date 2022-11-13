@@ -26,7 +26,7 @@ pipeline {
         stage('Cleaning Maven install'){
             steps {
                 echo "Cleaning Maven install";
-                sh 'mvn -X clean install'
+                sh 'mvn clean install'
             }
         }
         
@@ -34,12 +34,6 @@ pipeline {
             steps{
                 echo "Junit";
                 sh "mvn test"
-            }
-		post {
-                always {
-                    junit allowEmptyResults: true, testResults: 'target/surefire-reports/TEST-*.xml'
-                    archiveArtifacts artifacts: '**/target/*.jar'
-                }
             }
         }
         
@@ -53,7 +47,7 @@ pipeline {
 	stage('Deploying to Nexus') {
             steps {
                 echo "Deploying to Nexus";
-                sh 'mvn  -X deploy'
+                sh 'mvn deploy'
             }
         }
 
