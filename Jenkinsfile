@@ -90,7 +90,7 @@ pipeline {
             always{
                 emailext to: "dhia.abdelli@esprit.tn",
                 subject: "jenkins build:${currentBuild.currentResult}: ${env.JOB_NAME}",
-                body: "${currentBuild.currentResult}: Job ${env.JOB_NAME}\n",
+                body: "${currentBuild.currentResult}: Job ${env.JOB_NAME}\n"
             }
     }
 }
