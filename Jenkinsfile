@@ -31,14 +31,7 @@ stage('Checking Maven version'){
             }
         }
 
- stage("Running Docker-compose in Background") {
-            steps{
-                echo "Running Docker-compose in Background";
-                sh 'docker-compose up -d'
-            }
-        } 
-        
-    }
+ 
 
 stage('Push') {
 
