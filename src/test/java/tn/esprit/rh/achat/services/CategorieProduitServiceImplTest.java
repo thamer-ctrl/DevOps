@@ -11,12 +11,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 
 import tn.esprit.rh.achat.entities.CategorieProduit;
-import tn.esprit.rh.achat.entities.Produit;
 import tn.esprit.rh.achat.repositories.CategorieProduitRepository;
-import tn.esprit.rh.achat.repositories.ProduitRepository;
 import tn.esprit.rh.achat.services.ICategorieProduitService;
-import tn.esprit.rh.achat.services.IProduitService;
-
 
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -43,16 +39,10 @@ class CategorieProduitServiceImplTest {
 	ICategorieProduitService cs;
 
 
-	@Autowired
-	IProduitService ps;
-
 
 	@MockBean
     	private CategorieProduitRepository cr;
 	
-    	@MockBean
-    	private ProduitRepository pr;
-
 	CategorieProduit c1=new CategorieProduit(1L,"cat 1","cat 1",null);
 	CategorieProduit c2=new CategorieProduit(2L,"cat 1","cat 1",null);
 
