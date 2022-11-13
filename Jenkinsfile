@@ -86,11 +86,11 @@ pipeline {
             }
         } 
     }
-    post {
-            always{
-                emailext to: "dhia.abdelli@esprit.tn",
-                subject: "jenkins build:${currentBuild.currentResult}: ${env.JOB_NAME}",
-                body: "${currentBuild.currentResult}: Job ${env.JOB_NAME}\n"
-            }
+    post{
+        always{
+            mail to: "dhia.abdelli@esprit.tn",
+            subject: "jenkins build:${currentBuild.currentResult}: ${env.JOB_NAME}",
+            body: "${currentBuild.currentResult}: Job ${env.JOB_NAME}\nMore Info can be found here: ${env.BUILD_URL}"
+        }
     }
 }
