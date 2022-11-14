@@ -1,0 +1,136 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('git') {
+            steps {
+               git branch: 'branch_thamer', url: 'https://github.com/thamer-ctrl/DevOps.git'
+            }
+        }
+        
+        stage('MVN clean stage') {
+          
+            steps {
+            sh 'mvn clean '
+               
+            }
+        }
+        
+          stage('MVN install stage') {
+          
+            steps {
+            sh 'mvn install'
+               
+            }
+        }
+        
+           stage('MVN COMPILE stage') {
+          
+            steps {
+            sh 'mvn compile'
+               
+            }
+        }
+        
+            stage('MVN TEST Mockito stage') {
+          
+            steps {
+            sh 'mvn test'
+               
+            }
+        }
+        
+        stage('SonarQube stage') {
+          
+            steps {
+            sh'mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=001'
+               
+            }
+        }
+        
+       stage('Nexus stage') {
+            
+            steps {
+            sh 'mvn deploy'
+               }
+        } 
+        /* 
+        stage('Build docker image'){
+            steps{
+                script{
+                    sh 'docker build -t thamerbarhoumictrl/achat .'
+                }
+            }
+        }
+
+        stage('Push image to Hub'){
+            steps{
+                script{
+                   withCredentials([string(credentialsId: 'my-dockerhub-pwd', variable: 'dockerhubpwd')]) {
+                    sh 'docker login -u thamerbarhoumictrl -p ${dockerhubpwd}'
+                     }           
+                     sh 'docker push thamerbarhoumictrl/achat'
+                }
+ */
+
+stage('Docker Build and Push') {
+       steps {
+         withDockerRegistry([credentialsId: "my-docker-hub", url: ""]) {
+           sh 'printenv'
+           sh 'docker build -t thamerbarhoumictrl/achat:latest .'
+           sh 'docker push thamerbarhoumictrl/achat:latest '
+         }
+       }
+     }
+   
+   
+    stage('Docker Compose') {
+       steps {
+               sh 'docker-compose up --d --force-recreate '
+       }
+     }
+ 
+ 
+ 
+ /*   */
+ 
+   
+  
+  
+  
+        
+        
+            }
+            
+            
+            
+                
+                
+                post {
+
+        always {
+            echo 'This will always run'
+        }
+       
+        success {
+            mail to: "thamer.barhoumi@esprit.tn",
+                     subject: "Success",
+                     body: "Succes on job ${env.JOB_NAME}, Build Number: ${env.BUILD_NUMBER} "        
+        }
+        
+        failure {
+                    mail to: "thamer.barhoumi@esprit.tn",
+                     subject: "Failure",
+                     body: "Failure on job ${env.JOB_NAME}, Build Number: ${env.BUILD_NUMBER}, Build URL: ${env.BUILD_URL} "     
+                }
+
+    }
+  
+            
+
+}
+
+
+
+
+   
